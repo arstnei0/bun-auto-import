@@ -1,6 +1,15 @@
 import { PluginBuilder } from "bun"
 import { UnimportOptions } from "unimport"
 
+const getLoader = (path: string) =>
+	path.endsWith("ts")
+		? "ts"
+		: path.endsWith("js")
+		? "js"
+		: path.endsWith("tsx")
+		? "tsx"
+		: "jsx"
+
 export const autoImport = (
 	options: Partial<
 		UnimportOptions & {
@@ -20,15 +29,17 @@ export const autoImport = (
 			const dtsContent = await generateTypeDeclarations()
 			Bun.write(options.dts ?? "./auto-import.d.ts", dtsContent)
 
-			builder.onLoad({ filter: /.*\.ts/i }, async (args) => {
+			builder.onLoad({ filter: /.*/i }, async (args) => {
 				const fileContent = await Bun.file(args.path).text()
 				const transformedFileContent = await injectImports(fileContent)
 
 				return {
 					contents: transformedFileContent.code,
-					loader: "ts",
+					loader: getLoader(args.path),
 				}
 			})
 		},
 	}
 }
+
+export default autoImport
