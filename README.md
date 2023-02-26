@@ -2,6 +2,8 @@
 
 Auto import support for [Bun](https://bun.sh), powered by [Unimport](https://github.com/unjs/unimport).
 
+Please consider give it a star if you like it. Thank you!
+
 ## Install
 
 ```bash
